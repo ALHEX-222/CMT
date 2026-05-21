@@ -1,0 +1,12 @@
+# =============================================================================
+# PARA EL MAIN.PY
+# Instalar con: pip install -r requirements.txt 
+# PYTHON 3.11
+# =============================================================================
+
+flask==3.0.3
+flask-cors==4.0.1
+mysql-connector-python==8.4.0
+pandas==2.2.2
+openpyxl==3.1.4
+python-dotenv==1.0.1
