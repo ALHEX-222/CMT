@@ -3,7 +3,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'cmt_database');
+define('DB_NAME', 'cmt_costura');
 
 $conn = mysqli_connect(
     DB_HOST,
