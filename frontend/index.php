@@ -47,22 +47,23 @@ if (!isset($_SESSION['usuario'])) {
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link" data-target="corte">
-                    <i class="bx bx-cut"></i>
-                    <span class="links_name">ORDEN CORTE</span>
-                </a>
-            </li>
-            <li>
                 <a href="#" class="nav-link" data-target="lineas">
                     <i class="bx bx-layer"></i>
                     <span class="links_name">LÍNEA</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link" data-target="alertas">
+                    <i class="bx bx-bell"></i>
+                    <span class="links_name">ALERTAS</span>
+                    <span class="nav-alert-badge" id="alertNavBadge" style="display:none;">0</span>
                 </a>
             </li>
         </ul>
     </nav>
 
     <div class="main-container">
-        
+
         <header class="appbar">
             <div class="appbar-title">
                 <h1>GESTION DE LA TEXTIL CMT DEL SUR</h1>
@@ -87,38 +88,56 @@ if (!isset($_SESSION['usuario'])) {
 
         <main class="content">
             <div class="container-fluid">
-                
+
                 <div id="content-dashboard" class="content-section active">
-                    <h2>Bienvenido al Dashboard</h2>
-                    <p>Aquí verás el resumen general del sistema textil CMT.</p>
+                    <iframe src="dashboard.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-dashboard"></iframe>
                 </div>
 
                 <div id="content-clientes" class="content-section">
-                    <h2>Bienvenido a Clientes</h2>
-                    <p>Módulo de gestión y registro de clientes de la empresa.</p>
+                    <iframe src="cliente.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-clientes"></iframe>
                 </div>
 
                 <div id="content-pedidos" class="content-section">
-    <iframe src="ordenPedido.php" style="width: 100%; height: calc(100vh - 120px); border: none; overflow-y: auto;" id="iframe-pedidos"></iframe>
-</div>
-
-                <div id="content-corte" class="content-section">
-                    <h2>Bienvenido a Orden Corte</h2>
-                    <p>Control y distribución de las órdenes de corte textil.</p>
+                    <iframe src="ordenPedido.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-pedidos"></iframe>
                 </div>
 
                 <div id="content-lineas" class="content-section">
-                    <h2>Bienvenido a Líneas</h2>
-                    <p>Módulo de gestión y supervisión de las líneas de producción.</p>
+                    <iframe src="linea.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-lineas"></iframe>
+                </div>
+
+                <div id="content-alertas" class="content-section">
+                    <iframe src="alerta.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-alertas"></iframe>
                 </div>
 
             </div>
         </main>
 
-        <div class="floating-alert" id="alertBtn">
+        <div class="floating-alert" id="alertBtn" title="Ver alertas pendientes">
             <i class="bx bx-bell icon-alert"></i>
-            <span>Alertas</span>
+            <span class="float-badge" id="alertFloatBadge" style="display:none;">0</span>
         </div>
+
+        <div class="alert-float-panel" id="alertPanel">
+            <div class="afp-header">
+                <span class="afp-title">
+                    <i class="bx bx-bell"></i> Alertas Pendientes
+                </span>
+                <div class="afp-header-right">
+                    <a href="#" class="afp-ver-todas"
+                       onclick="event.preventDefault();
+                                alertPanel.classList.remove('open');
+                                document.querySelector('[data-target=alertas]').click();">
+                        Ver todas
+                    </a>
+                    <button class="afp-close" id="alertPanelClose">
+                        <i class="bx bx-x"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="afp-list" id="alertPanelList">
+            </div>
+        </div>
+
     </div>
 
     <div id="logoutModal" class="modal-overlay">
@@ -127,7 +146,7 @@ if (!isset($_SESSION['usuario'])) {
             <h3>¿Cerrar Sesión?</h3>
             <p>¿Estás seguro de que deseas salir del sistema CMT?</p>
             <div class="modal-buttons">
-                <button id="cancelBtn" class="btn-cancel">Cancelar</button>
+                <button id="cancelBtn"  class="btn-cancel">Cancelar</button>
                 <button id="confirmBtn" class="btn-confirm">Sí, salir</button>
             </div>
         </div>

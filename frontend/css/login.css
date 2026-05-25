@@ -1,14 +1,11 @@
-/* IMPORTAR FUENTE */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* RESET */
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     }
 
-/* BODY */
 body{
     font-family: 'Poppins', sans-serif;
     height: 100vh;
@@ -20,7 +17,6 @@ body{
     position: relative;
 }
 
-/* EFECTOS DEL FONDO */
 body::before,
 body::after{
     content: "";
@@ -43,7 +39,6 @@ body::after{
     background: rgba(255, 77, 109, 0.15);
 }
 
-/* TARJETA LOGIN */
 .login-card{
     position: relative;
     width: 100%;
@@ -57,7 +52,6 @@ body::after{
     animation: fadeIn 0.8s ease;
 }
 
-/* LOGO */
 .logo-container{
     display: flex;
     justify-content: center;
@@ -75,7 +69,6 @@ body::after{
     box-shadow: 0 0 25px rgba(0, 214, 201, 0.35);
 }
 
-/* TITULOS */
 .login-card h2{
     text-align: center;
     color: white;
@@ -91,7 +84,6 @@ body::after{
     font-size: 0.95rem;
 }
 
-/* INPUTS */
 .input-group{
     margin-bottom: 1.5rem;
 }
@@ -125,7 +117,6 @@ body::after{
     background: rgba(255,255,255,0.08);
 }
 
-/* BOTON */
 .btn-login{
     width: 100%;
     padding: 1rem;
@@ -144,7 +135,6 @@ body::after{
     box-shadow: 0 12px 20px rgba(255, 77, 109, 0.35);
 }
 
-/* MENSAJE ERROR */
 .error-msg{
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239,68,68,0.3);
@@ -156,7 +146,6 @@ body::after{
     font-size: 0.9rem;
 }
 
-/* ANIMACION */
 @keyframes fadeIn{
     from{
         opacity: 0;
@@ -168,7 +157,6 @@ body::after{
     }
 }
 
-/* RESPONSIVE */
 @media(max-width: 480px){
 
     .login-card{

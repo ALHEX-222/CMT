@@ -39,13 +39,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
     exit();
 }
 
+if (isset($_GET['action']) && $_GET['action'] === 'get_divisiones') {
+    header('Content-Type: application/json');
+    require_once "../database/config.php";
+
+    $id_op = isset($_GET['id_op']) ? intval($_GET['id_op']) : 0;
+    if ($id_op <= 0) {
+        echo json_encode(["success" => false, "message" => "ID de OP inválido."]);
+        exit();
+    }
+
+    /** @var mysqli $conn */
+    $stmt = mysqli_prepare($conn,
+        "SELECT id_oc, fecha_corte, observacion, cantidad, id_linea
+         FROM orden_corte
+         WHERE id_op = ?
+         ORDER BY id_oc ASC"
+    );
+
+    if (!$stmt) {
+        echo json_encode(["success" => false, "message" => "Error al preparar consulta: " . mysqli_error($conn)]);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $id_op);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
+    $divisiones = [];
+    while ($row = mysqli_fetch_assoc($res)) {
+        $divisiones[] = $row;
+    }
+
+    echo json_encode(["success" => true, "divisiones" => $divisiones, "id_op" => $id_op]);
+    exit();
+}
+
 require_once "../database/config.php";
 
-// SQL con conteo de sub-divisiones (OC) por cada OP
 $sql = "SELECT op.id_op, op.cantidad_prendas, op.fecha_ingreso, op.estado, op.descripcion, op.estilo, c.nombre_cliente,
-        (SELECT COUNT(*) FROM ORDEN_CORTE oc WHERE oc.id_op = op.id_op) as total_divisiones
-        FROM ORDEN_PEDIDO op
-        INNER JOIN CLIENTE c ON op.id_cliente = c.id_cliente
+        (SELECT COUNT(*) FROM orden_corte oc WHERE oc.id_op = op.id_op) as total_divisiones
+        FROM orden_pedido op
+        INNER JOIN cliente c ON op.id_cliente = c.id_cliente
         ORDER BY CASE WHEN op.estado = 'Pendiente' THEN 0 ELSE 1 END, op.fecha_ingreso DESC";
 /** @var mysqli $conn */
 $resultado = mysqli_query($conn, $sql);
@@ -135,6 +170,7 @@ $resultado = mysqli_query($conn, $sql);
                         <th>DIVISIONES (OC)</th>
                         <th>FECHA INGRESO</th>
                         <th>ESTADO</th>
+                        <th>ACCIÓN</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyOP">
@@ -156,10 +192,77 @@ $resultado = mysqli_query($conn, $sql);
                                     <?php echo $row['estado']; ?>
                                 </span>
                             </td>
+                            <td>
+                                <button class="btn-ver-divisiones" 
+                                        data-id="<?php echo $row['id_op']; ?>"
+                                        data-cliente="<?php echo htmlspecialchars($row['nombre_cliente']); ?>"
+                                        data-estilo="<?php echo htmlspecialchars($row['estilo']); ?>"
+                                        data-desc="<?php echo htmlspecialchars($row['descripcion']); ?>"
+                                        data-total="<?php echo $row['cantidad_prendas']; ?>">
+                                    <i class="bx bx-layer"></i> VER
+                                </button>
+                            </td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay" style="display:none;">
+        <div class="modal-panel">
+
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <span class="modal-icon"><i class="bx bx-scissors"></i></span>
+                    <div>
+                        <h3 id="modalTitle">Divisiones de Corte</h3>
+                        <p id="modalSubtitle" class="modal-subtitle"></p>
+                    </div>
+                </div>
+                <div class="modal-header-actions">
+                    <span id="modalDescBadge" class="modal-desc-badge"></span>
+                    <button id="btnCerrarModal" class="btn-cerrar-modal">
+                        <i class="bx bx-x"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="modalResumen" class="modal-resumen"></div>
+
+            <div id="modalDistribucion" class="modal-distribucion" style="display:none;">
+                <div class="dist-title"><i class="bx bx-bar-chart-alt-2"></i> DISTRIBUCIÓN POR LÍNEA</div>
+                <div id="distBars" class="dist-bars"></div>
+            </div>
+
+            <div class="modal-filtros">
+                <div class="filtro-field">
+                    <i class="bx bx-search"></i>
+                    <input type="text" id="filtroOC" placeholder="Buscar por N° OC...">
+                </div>
+                <div class="filtro-field">
+                    <i class="bx bx-git-branch"></i>
+                    <select id="filtroLinea">
+                        <option value="">Todas las Líneas</option>
+                    </select>
+                </div>
+                <div class="filtro-field">
+                    <i class="bx bx-sort-alt-2"></i>
+                    <select id="filtroOrden">
+                        <option value="oc_asc">OC: Menor → Mayor</option>
+                        <option value="oc_desc">OC: Mayor → Menor</option>
+                        <option value="cant_desc">Cantidad: Mayor → Menor</option>
+                        <option value="cant_asc">Cantidad: Menor → Mayor</option>
+                        <option value="fecha_asc">Fecha: Más antigua</option>
+                        <option value="fecha_desc">Fecha: Más reciente</option>
+                    </select>
+                </div>
+                <div id="filtroResultCount" class="filtro-result-count"></div>
+            </div>
+
+            <div id="modalBody" class="modal-body">
+            </div>
+
         </div>
     </div>
 

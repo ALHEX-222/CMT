@@ -23,7 +23,6 @@ def procesar_archivo(ruta_archivo, modo="load"):
         datos_orden_pedido = {}
         datos_orden_corte = []
         
-        # Para el conteo dinámico de OC agrupadas por OP en la Vista Previa
         conteo_oc_por_op = {} 
         orden_aparicion_op = []
         
@@ -115,9 +114,6 @@ def procesar_archivo(ruta_archivo, modo="load"):
             print(json.dumps(resultado))
             return
 
-        # ==========================================
-        # MODO CARGA (PROCESAMIENTO SQL REAL)
-        # ==========================================
         conn = conectar_bd()
         cursor = conn.cursor()
         ordenes_subidas = 0

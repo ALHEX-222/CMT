@@ -135,6 +135,25 @@ body {
     pointer-events: auto;
 }
 
+.nav-alert-badge {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid var(--bg-primary);
+}
+
 .main-container {
     position: relative;
     width: calc(100% - var(--sidebar-width-collapsed));
@@ -277,42 +296,211 @@ body {
     display: block;
 }
 
-.content h2 {
-    color: #2c3e50;
-    margin-bottom: 10px;
-}
-
-.content p {
-    color: var(--text-muted);
-}
-
 .floating-alert {
     position: fixed;
     bottom: 25px;
     right: 25px;
-    background-color: #000000;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 30px;
+    width: 52px;        
+    height: 52px;
+    background: #1e293b;
+    color: #fff;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
     cursor: pointer;
-    font-weight: bold;
-    font-size: 14px;
     transition: transform 0.2s, background 0.2s;
-    z-index: 98;
+    z-index: 150;
 }
 
 .floating-alert:hover {
-    transform: scale(1.05);
-    background-color: #e67e22;
+    transform: scale(1.1);
+    background: #e67e22;
 }
 
-.icon-alert {
-    font-size: 18px;
+.floating-alert span:not(.float-badge) {
+    display: none;
 }
+
+.floating-alert .icon-alert {
+    font-size: 22px;
+}
+
+.float-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid #fff;
+}
+
+.alert-float-panel {
+    position: fixed;
+    bottom: 88px;
+    right: 25px;
+    width: 340px;
+    max-height: 460px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border: 1px solid #e2e8f0;
+    z-index: 149;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(16px) scale(0.97);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.alert-float-panel.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.afp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex-shrink: 0;
+}
+
+.afp-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.afp-title i { color: #f59e0b; font-size: 16px; }
+
+.afp-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.afp-ver-todas {
+    font-size: 12px;
+    color: #2196f3;
+    text-decoration: none;
+    font-weight: 600;
+}
+.afp-ver-todas:hover { text-decoration: underline; }
+
+.afp-close {
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    color: #94a3b8;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0;
+}
+.afp-close:hover { background: #f43f5e; color: #fff; border-color: #f43f5e; }
+
+.afp-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.afp-list::-webkit-scrollbar       { width: 4px; }
+.afp-list::-webkit-scrollbar-track { background: transparent; }
+.afp-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
+.fp-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fp-critica     { border-left: 3px solid #f43f5e; background: #fff1f2; }
+.fp-advertencia { border-left: 3px solid #f59e0b; background: #fffbeb; }
+.fp-info        { border-left: 3px solid #2196f3; background: #eff6ff; }
+
+.fp-icon { font-size: 17px; margin-top: 1px; flex-shrink: 0; }
+.fp-critica     .fp-icon { color: #f43f5e; }
+.fp-advertencia .fp-icon { color: #f59e0b; }
+.fp-info        .fp-icon { color: #2196f3; }
+
+.fp-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.fp-msg {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1e293b;
+    line-height: 1.4;
+    margin: 0;
+    word-break: break-word;
+}
+
+.fp-op    { font-size: 10.5px; color: #2196f3; font-weight: 600; }
+.fp-fecha { font-size: 10px; color: #94a3b8; }
+
+.fp-atencion {
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 15px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    padding: 0;
+}
+.fp-atencion:hover { background: #22c55e; color: #fff; border-color: #22c55e; }
+
+.fp-empty {
+    text-align: center;
+    padding: 28px 16px;
+    color: #94a3b8;
+}
+.fp-empty i    { font-size: 32px; display: block; margin-bottom: 8px; }
+.fp-empty p    { font-size: 12.5px; }
 
 .modal-overlay {
     position: fixed;
@@ -391,19 +579,13 @@ body {
     background-color: var(--danger-color);
     color: white;
 }
-
-.btn-confirm:hover {
-    background-color: #c0392b;
-}
+.btn-confirm:hover { background-color: #c0392b; }
 
 .btn-cancel {
     background-color: #e2e8f0;
     color: #4a5568;
 }
-
-.btn-cancel:hover {
-    background-color: #cbd5e0;
-}
+.btn-cancel:hover { background-color: #cbd5e0; }
 
 #content-pedidos {
     width: 100%;
@@ -415,16 +597,12 @@ body {
 #iframe-pedidos {
     display: block;
     width: 100%;
-    background: transparent; 
-    border: none;        
-    border-radius: 8px;     
+    background: transparent;
+    border: none;
+    border-radius: 8px;
 }
 
 @media (max-width: 768px) {
-    .content {
-        padding: 15px;
-    }
-    #iframe-pedidos {
-        height: calc(100vh - 90px) !important;
-    }
+    .content { padding: 15px; }
+    #iframe-pedidos { height: calc(100vh - 90px) !important; }
 }
