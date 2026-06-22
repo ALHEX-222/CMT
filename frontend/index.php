@@ -18,6 +18,7 @@ if (!isset($_SESSION['usuario'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - CMT</title>
     <link rel="stylesheet" href="css/index.css">
+    <link rel="icon" type="image/png" href="img/icon-cmt.png">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 <body>
@@ -52,6 +53,20 @@ if (!isset($_SESSION['usuario'])) {
                     <span class="links_name">LÍNEA</span>
                 </a>
             </li>
+            <li>
+                <a href="#" class="nav-link" data-target="predicciones">
+                    <i class="bx bx-line-chart"></i>
+                    <span class="links_name">PREDICCIONES</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="nav-link" data-target="mensajes">
+                    <i class="bx bx-message"></i>
+                    <span class="links_name">MENSAJES</span>
+                </a>
+            </li>
+
             <li>
                 <a href="#" class="nav-link" data-target="alertas">
                     <i class="bx bx-bell"></i>
@@ -103,6 +118,14 @@ if (!isset($_SESSION['usuario'])) {
 
                 <div id="content-lineas" class="content-section">
                     <iframe src="linea.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-lineas"></iframe>
+                </div>
+
+                <div id="content-predicciones" class="content-section">
+                    <iframe src="prediccion.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-predicciones"></iframe>
+                </div>
+
+                <div id="content-mensajes" class="content-section">
+                    <iframe src="mensaje.php" style="width:100%;height:calc(100vh - 120px);border:none;overflow-y:auto;" id="iframe-mensajes"></iframe>
                 </div>
 
                 <div id="content-alertas" class="content-section">

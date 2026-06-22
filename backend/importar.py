@@ -39,7 +39,7 @@ def procesar_archivo(ruta_archivo, modo="load"):
             idx_cliente = cabeceras.index("Cliente")
             
             idx_eficiencia = cabeceras.index("Eficiencia Production") if "Eficiencia Production" in cabeceras else (
-                cabeceras.index("Eficincia Production") if "Eficincia Production" in cabeceras else cabeceras.index("Eficincia Produccion")
+                cabeceras.index("Eficiencia Production") if "Eficiencia Production" in cabeceras else cabeceras.index("Eficiencia Produccion")
             )
             idx_linea = cabeceras.index("Linea") if "Linea" in cabeceras else cabeceras.index("Línea")
         except ValueError as e:

@@ -1,0 +1,326 @@
+:root {
+    --color-primario: #4f6ef7;
+    --color-primario-oscuro: #3a56d4;
+    --color-fondo: #f4f6fb;
+    --color-tarjeta: #ffffff;
+    --color-borde: #e3e7f1;
+    --color-texto: #2b2d3a;
+    --color-texto-suave: #767a8a;
+    --color-error: #e74c3c;
+    --radio: 14px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+.mensajes-app {
+    display: flex;
+    height: 100vh;
+}
+
+/* ---------- Lista de contactos ---------- */
+.lista-contactos {
+    width: 300px;
+    background: var(--color-tarjeta);
+    border-right: 1px solid var(--color-borde);
+    display: flex;
+    flex-direction: column;
+}
+
+.lista-contactos-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.lista-contactos-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.btn-volver {
+    text-decoration: none;
+    font-size: 18px;
+    color: var(--color-texto-suave);
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.btn-volver:hover {
+    background: var(--color-fondo);
+}
+
+.contactos-scroll {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.contacto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-fondo);
+    transition: background 0.15s;
+}
+
+.contacto:hover {
+    background: var(--color-fondo);
+}
+
+.contacto.activo {
+    background: #eef1ff;
+    border-left: 3px solid var(--color-primario);
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--color-primario);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.contacto-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.contacto-nombre {
+    font-weight: 600;
+    font-size: 14.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contacto-rol {
+    font-size: 12.5px;
+    color: var(--color-texto-suave);
+}
+
+.sin-contactos {
+    padding: 20px;
+    color: var(--color-texto-suave);
+    font-size: 14px;
+}
+
+/* ---------- Panel de chat ---------- */
+.panel-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-vacio {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-texto-suave);
+    font-size: 15px;
+    text-align: center;
+    padding: 40px;
+}
+
+.chat-activo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 24px;
+    background: var(--color-tarjeta);
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.chat-header span {
+    font-size: 12.5px;
+    color: var(--color-texto-suave);
+}
+
+.chat-mensajes {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sin-mensajes {
+    color: var(--color-texto-suave);
+    text-align: center;
+    margin-top: 40px;
+    font-size: 14px;
+}
+
+.mensaje {
+    max-width: 60%;
+    padding: 10px 14px;
+    border-radius: var(--radio);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.mensaje.propio {
+    align-self: flex-end;
+    background: var(--color-primario);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.mensaje.recibido {
+    align-self: flex-start;
+    background: var(--color-tarjeta);
+    border: 1px solid var(--color-borde);
+    border-bottom-left-radius: 4px;
+}
+
+.mensaje-titulo {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.mensaje-texto {
+    word-wrap: break-word;
+}
+
+.mensaje-adjunto {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 13px;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    color: inherit;
+}
+
+.mensaje.recibido .mensaje-adjunto {
+    background: var(--color-fondo);
+    color: var(--color-primario-oscuro);
+}
+
+.mensaje-fecha {
+    font-size: 11px;
+    margin-top: 6px;
+    opacity: 0.75;
+}
+
+/* ---------- Formulario de envío ---------- */
+.chat-form {
+    padding: 14px 24px 18px;
+    background: var(--color-tarjeta);
+    border-top: 1px solid var(--color-borde);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-form input[type="text"] {
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13.5px;
+}
+
+.chat-form-fila {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.chat-form textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.btn-adjuntar {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--color-fondo);
+    border: 1px solid var(--color-borde);
+}
+
+.btn-adjuntar input {
+    display: none;
+}
+
+.btn-enviar {
+    background: var(--color-primario);
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-enviar:hover {
+    background: var(--color-primario-oscuro);
+}
+
+.btn-enviar:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.archivo-seleccionado {
+    font-size: 12.5px;
+    color: var(--color-texto-suave);
+}
+
+.form-error {
+    font-size: 12.5px;
+    color: var(--color-error);
+    min-height: 14px;
+}
+
+@media (max-width: 720px) {
+    .lista-contactos {
+        width: 90px;
+    }
+    .contacto-info {
+        display: none;
+    }
+    .mensaje {
+        max-width: 85%;
+    }
+}
