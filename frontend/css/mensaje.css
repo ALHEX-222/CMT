@@ -1,326 +1,718 @@
 :root {
-    --color-primario: #4f6ef7;
-    --color-primario-oscuro: #3a56d4;
-    --color-fondo: #f4f6fb;
-    --color-tarjeta: #ffffff;
-    --color-borde: #e3e7f1;
-    --color-texto: #2b2d3a;
-    --color-texto-suave: #767a8a;
-    --color-error: #e74c3c;
-    --radio: 14px;
+    --azul: #4338ca;
+    --azul-hover: #372fa8;
+    --azul-claro: #6366f1;
+    --azul-suave: #eef0ff;
+    --fondo-chat: #f4f5fb;
+    --superficie: #ffffff;
+    --borde: rgba(0,0,0,0.07);
+    --borde-fuerte: rgba(0,0,0,0.12);
+    --texto: #1c1e2b;
+    --texto-suave: #71738a;
+    --error: #dc2626;
+    --error-fondo: #fef2f2;
+    --exito: #15803d;
+    --exito-fondo: #f0fdf4;
+    --radio-md: 8px;
+    --fuente-chat: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
-* {
+.mensajes-app *, .mensajes-app *::before, .mensajes-app *::after {
     box-sizing: border-box;
-}
-
-body {
     margin: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: var(--color-fondo);
-    color: var(--color-texto);
+    padding: 0;
 }
 
 .mensajes-app {
-    display: flex;
-    height: 100vh;
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    height: calc(100vh - 60px) !important;
+    overflow: hidden !important;
+    font-family: var(--fuente-chat);
+    color: var(--texto);
+    background: var(--fondo-chat);
+    position: relative;
 }
 
-/* ---------- Lista de contactos ---------- */
-.lista-contactos {
-    width: 300px;
-    background: var(--color-tarjeta);
-    border-right: 1px solid var(--color-borde);
-    display: flex;
-    flex-direction: column;
+/* ── Sidebar contactos ───────────────────────────────────────────────────── */
+.mensajes-app .lista-contactos {
+    width: 270px !important;
+    min-width: 270px !important;
+    max-width: 270px !important;
+    flex-shrink: 0 !important;
+    background: var(--superficie) !important;
+    border-right: 1px solid var(--borde) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
 }
 
-.lista-contactos-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 20px;
-    border-bottom: 1px solid var(--color-borde);
+.mensajes-app .lista-contactos-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 16px 18px 13px !important;
+    border-bottom: 1px solid var(--borde) !important;
+    flex-shrink: 0 !important;
 }
 
-.lista-contactos-header h2 {
-    margin: 0;
-    font-size: 20px;
+.mensajes-app .icono-encabezado {
+    width: 17px !important;
+    height: 17px !important;
+    color: var(--azul) !important;
+    flex-shrink: 0 !important;
+    display: block !important;
 }
 
-.btn-volver {
-    text-decoration: none;
-    font-size: 18px;
-    color: var(--color-texto-suave);
-    padding: 4px 10px;
-    border-radius: 8px;
+.mensajes-app .lista-contactos-header h2 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--texto) !important;
+    line-height: 1 !important;
 }
 
-.btn-volver:hover {
-    background: var(--color-fondo);
+.mensajes-app .contactos-tabs {
+    display: flex !important;
+    border-bottom: 1px solid var(--borde) !important;
+    flex-shrink: 0 !important;
 }
 
-.contactos-scroll {
-    flex: 1;
-    overflow-y: auto;
+.mensajes-app .contacto-tab {
+    flex: 1 !important;
+    padding: 9px 0 !important;
+    font-size: 12px !important;
+    font-family: var(--fuente-chat) !important;
+    font-weight: 500 !important;
+    color: var(--texto-suave) !important;
+    background: none !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    transition: color 0.15s, border-color 0.15s !important;
 }
 
-.contacto {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--color-fondo);
-    transition: background 0.15s;
+.mensajes-app .contacto-tab.activo {
+    color: var(--azul) !important;
+    border-bottom-color: var(--azul) !important;
 }
 
-.contacto:hover {
-    background: var(--color-fondo);
+.mensajes-app .contactos-scroll {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
 }
 
-.contacto.activo {
-    background: #eef1ff;
-    border-left: 3px solid var(--color-primario);
+.mensajes-app .contactos-scroll::-webkit-scrollbar { width: 4px; }
+.mensajes-app .contactos-scroll::-webkit-scrollbar-thumb { background: var(--borde-fuerte); border-radius: 4px; }
+
+.mensajes-app .contacto {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 11px 16px !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid var(--borde) !important;
+    transition: background 0.12s !important;
+    background: none !important;
+    text-decoration: none !important;
+    width: 100% !important;
 }
 
-.avatar {
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: var(--color-primario);
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 15px;
+.mensajes-app .contacto:hover { background: #f0f0f9 !important; }
+.mensajes-app .contacto.activo { background: var(--azul-suave) !important; }
+.mensajes-app .contacto.activo .contacto-nombre { color: var(--azul) !important; }
+
+.mensajes-app .avatar {
+    width: 37px !important;
+    height: 37px !important;
+    min-width: 37px !important;
+    flex-shrink: 0 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    color: inherit !important;
 }
 
-.contacto-info {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+.mensajes-app .avatar-tono-0 { background: #c7d2fe !important; color: #3730a3 !important; }
+.mensajes-app .avatar-tono-1 { background: #bae6fd !important; color: #0369a1 !important; }
+.mensajes-app .avatar-tono-2 { background: #bbf7d0 !important; color: #166534 !important; }
+.mensajes-app .avatar-tono-3 { background: #fde68a !important; color: #854f0b !important; }
+.mensajes-app .avatar-tono-4 { background: #fecdd3 !important; color: #9f1239 !important; }
+
+.mensajes-app .contacto-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    overflow: hidden !important;
 }
 
-.contacto-nombre {
-    font-weight: 600;
-    font-size: 14.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.mensajes-app .contacto-nombre {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    color: var(--texto) !important;
+    display: block !important;
+    line-height: 1.3 !important;
 }
 
-.contacto-rol {
-    font-size: 12.5px;
-    color: var(--color-texto-suave);
+.mensajes-app .contacto-rol {
+    font-size: 11px !important;
+    color: var(--texto-suave) !important;
+    display: block !important;
+    line-height: 1.3 !important;
 }
 
-.sin-contactos {
-    padding: 20px;
-    color: var(--color-texto-suave);
-    font-size: 14px;
+.mensajes-app .contacto-online {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    border-radius: 50% !important;
+    background: #22c55e !important;
+    flex-shrink: 0 !important;
+    display: block !important;
 }
 
-/* ---------- Panel de chat ---------- */
-.panel-chat {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.mensajes-app .sin-contactos {
+    padding: 20px 16px !important;
+    color: var(--texto-suave) !important;
+    font-size: 13px !important;
 }
 
-.chat-vacio {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-texto-suave);
-    font-size: 15px;
-    text-align: center;
-    padding: 40px;
+/* ── Panel chat ──────────────────────────────────────────────────────────── */
+.mensajes-app .panel-chat {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    background: var(--fondo-chat) !important;
 }
 
-.chat-activo {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+/* FIX: chat-vacio y chat-activo se controlan con la clase .oculto,
+   no con display inline, para evitar conflictos con !important */
+.mensajes-app .chat-vacio {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--texto-suave) !important;
+    font-size: 13px !important;
+    gap: 12px !important;
+    text-align: center !important;
+    padding: 40px !important;
+    background: var(--fondo-chat) !important;
 }
 
-.chat-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 24px;
-    background: var(--color-tarjeta);
-    border-bottom: 1px solid var(--color-borde);
+.mensajes-app .chat-vacio svg {
+    width: 44px !important;
+    height: 44px !important;
+    color: #c5c6d4 !important;
+    display: block !important;
 }
 
-.chat-header h3 {
-    margin: 0;
-    font-size: 16px;
+.mensajes-app .chat-activo {
+    flex: 1 1 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
 }
 
-.chat-header span {
-    font-size: 12.5px;
-    color: var(--color-texto-suave);
+/* FIX PRINCIPAL: .oculto usa display:none con !important, gana siempre */
+.mensajes-app .oculto {
+    display: none !important;
 }
 
-.chat-mensajes {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.mensajes-app .chat-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 20px !important;
+    background: var(--superficie) !important;
+    border-bottom: 1px solid var(--borde) !important;
+    flex-shrink: 0 !important;
 }
 
-.sin-mensajes {
-    color: var(--color-texto-suave);
-    text-align: center;
-    margin-top: 40px;
-    font-size: 14px;
+.mensajes-app .chat-header-info {
+    flex: 1 !important;
+    min-width: 0 !important;
 }
 
-.mensaje {
-    max-width: 60%;
-    padding: 10px 14px;
-    border-radius: var(--radio);
-    font-size: 14px;
-    line-height: 1.4;
+.mensajes-app .chat-header h3 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--texto) !important;
+    line-height: 1.3 !important;
 }
 
-.mensaje.propio {
-    align-self: flex-end;
-    background: var(--color-primario);
-    color: #ffffff;
-    border-bottom-right-radius: 4px;
+.mensajes-app .chat-header-status {
+    font-size: 11px !important;
+    color: #22c55e !important;
+    margin-top: 2px !important;
+    display: block !important;
 }
 
-.mensaje.recibido {
-    align-self: flex-start;
-    background: var(--color-tarjeta);
-    border: 1px solid var(--color-borde);
-    border-bottom-left-radius: 4px;
+.mensajes-app .chat-header-actions {
+    display: flex !important;
+    gap: 6px !important;
+    flex-shrink: 0 !important;
 }
 
-.mensaje-titulo {
-    font-weight: 700;
-    margin-bottom: 4px;
+.mensajes-app .btn-header {
+    border: 1px solid var(--borde-fuerte) !important;
+    background: none !important;
+    border-radius: var(--radio-md) !important;
+    padding: 5px 8px !important;
+    cursor: pointer !important;
+    color: var(--texto-suave) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.12s !important;
+    line-height: 1 !important;
 }
 
-.mensaje-texto {
-    word-wrap: break-word;
+.mensajes-app .btn-header:hover { background: var(--fondo-chat) !important; }
+
+/* ── Mensajes ────────────────────────────────────────────────────────────── */
+.mensajes-app .chat-mensajes {
+    flex: 1 1 0 !important;
+    overflow-y: auto !important;
+    padding: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    background: var(--fondo-chat) !important;
+    min-height: 0 !important;
 }
 
-.mensaje-adjunto {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 13px;
-    text-decoration: none;
-    padding: 6px 10px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.18);
-    color: inherit;
+.mensajes-app .chat-mensajes::-webkit-scrollbar { width: 4px; }
+.mensajes-app .chat-mensajes::-webkit-scrollbar-thumb { background: var(--borde-fuerte); border-radius: 4px; }
+
+.mensajes-app .fecha-separador {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    color: var(--texto-suave) !important;
+    font-size: 11px !important;
+    margin: 4px 0 !important;
+    flex-shrink: 0 !important;
 }
 
-.mensaje.recibido .mensaje-adjunto {
-    background: var(--color-fondo);
-    color: var(--color-primario-oscuro);
+.mensajes-app .fecha-separador::before,
+.mensajes-app .fecha-separador::after {
+    content: '' !important;
+    flex: 1 !important;
+    height: 1px !important;
+    background: var(--borde-fuerte) !important;
 }
 
-.mensaje-fecha {
-    font-size: 11px;
-    margin-top: 6px;
-    opacity: 0.75;
+.mensajes-app .mensaje-fila {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    width: 100% !important;
 }
 
-/* ---------- Formulario de envío ---------- */
-.chat-form {
-    padding: 14px 24px 18px;
-    background: var(--color-tarjeta);
-    border-top: 1px solid var(--color-borde);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.mensajes-app .mensaje-fila.propio {
+    flex-direction: row-reverse !important;
 }
 
-.chat-form input[type="text"] {
-    border: 1px solid var(--color-borde);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 13.5px;
+.mensajes-app .avatar-mini {
+    width: 27px !important;
+    height: 27px !important;
+    min-width: 27px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    flex-shrink: 0 !important;
+    line-height: 1 !important;
 }
 
-.chat-form-fila {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
+.mensajes-app .mensaje {
+    max-width: 62% !important;
+    padding: 9px 14px !important;
+    border-radius: 16px !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    word-wrap: break-word !important;
 }
 
-.chat-form textarea {
-    flex: 1;
-    resize: none;
-    border: 1px solid var(--color-borde);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 14px;
-    font-family: inherit;
+.mensajes-app .mensaje.propio {
+    background: var(--azul) !important;
+    color: #fff !important;
+    border-bottom-right-radius: 4px !important;
 }
 
-.btn-adjuntar {
-    cursor: pointer;
-    font-size: 20px;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: var(--color-fondo);
-    border: 1px solid var(--color-borde);
+.mensajes-app .mensaje.recibido {
+    background: var(--superficie) !important;
+    color: var(--texto) !important;
+    border: 1px solid var(--borde-fuerte) !important;
+    border-bottom-left-radius: 4px !important;
 }
 
-.btn-adjuntar input {
-    display: none;
+.mensajes-app .mensaje-titulo {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    opacity: 0.75 !important;
+    margin-bottom: 4px !important;
+    display: block !important;
 }
 
-.btn-enviar {
-    background: var(--color-primario);
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+.mensajes-app .mensaje-adjunto {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 8px !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    padding: 5px 11px !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.22) !important;
+    color: inherit !important;
+    transition: opacity 0.15s !important;
 }
 
-.btn-enviar:hover {
-    background: var(--color-primario-oscuro);
+.mensajes-app .mensaje-adjunto svg { width: 13px !important; height: 13px !important; }
+.mensajes-app .mensaje-adjunto:hover { opacity: 0.8 !important; }
+
+.mensajes-app .mensaje.recibido .mensaje-adjunto {
+    background: var(--azul-suave) !important;
+    color: var(--azul) !important;
 }
 
-.btn-enviar:disabled {
-    opacity: 0.6;
-    cursor: default;
+.mensajes-app .mensaje-fecha {
+    font-size: 10px !important;
+    margin-top: 5px !important;
+    opacity: 0.6 !important;
+    display: block !important;
 }
 
-.archivo-seleccionado {
-    font-size: 12.5px;
-    color: var(--color-texto-suave);
+.mensajes-app .sin-mensajes {
+    text-align: center !important;
+    color: var(--texto-suave) !important;
+    font-size: 13px !important;
+    margin-top: 40px !important;
 }
 
-.form-error {
-    font-size: 12.5px;
-    color: var(--color-error);
-    min-height: 14px;
+/* ── Formulario ──────────────────────────────────────────────────────────── */
+.mensajes-app .chat-form {
+    padding: 12px 20px 14px !important;
+    border-top: 1px solid var(--borde) !important;
+    background: var(--superficie) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
 }
 
-@media (max-width: 720px) {
-    .lista-contactos {
-        width: 90px;
-    }
-    .contacto-info {
-        display: none;
-    }
-    .mensaje {
-        max-width: 85%;
-    }
+.mensajes-app .input-titulo {
+    width: 100% !important;
+    border: 1px solid var(--borde-fuerte) !important;
+    border-radius: var(--radio-md) !important;
+    padding: 8px 12px !important;
+    font-size: 12.5px !important;
+    font-family: var(--fuente-chat) !important;
+    background: var(--fondo-chat) !important;
+    color: var(--texto) !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: border-color 0.15s !important;
+}
+
+.mensajes-app .input-titulo:focus { border-color: var(--azul-claro) !important; }
+
+.mensajes-app .chat-form-fila {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    gap: 7px !important;
+}
+
+.mensajes-app .chat-form textarea {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    resize: none !important;
+    border: 1px solid var(--borde-fuerte) !important;
+    border-radius: var(--radio-md) !important;
+    padding: 9px 12px !important;
+    font-size: 13px !important;
+    font-family: var(--fuente-chat) !important;
+    background: var(--fondo-chat) !important;
+    color: var(--texto) !important;
+    outline: none !important;
+    box-shadow: none !important;
+    min-height: 40px !important;
+    transition: border-color 0.15s !important;
+}
+
+.mensajes-app .chat-form textarea:focus { border-color: var(--azul-claro) !important; }
+
+.mensajes-app .btn-icono {
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    padding: 0 12px !important;
+    height: 38px !important;
+    border-radius: var(--radio-md) !important;
+    background: var(--fondo-chat) !important;
+    border: 1px solid var(--borde-fuerte) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--texto-suave) !important;
+    font-size: 12px !important;
+    font-family: var(--fuente-chat) !important;
+    font-weight: 500 !important;
+    gap: 5px !important;
+    white-space: nowrap !important;
+    transition: background 0.13s, color 0.13s !important;
+    text-decoration: none !important;
+}
+
+.mensajes-app .btn-icono svg { width: 14px !important; height: 14px !important; flex-shrink: 0 !important; }
+.mensajes-app .btn-icono:hover { background: var(--azul-suave) !important; color: var(--azul) !important; border-color: var(--azul-claro) !important; }
+.mensajes-app .btn-icono input { display: none !important; }
+
+.mensajes-app .btn-enviar {
+    flex-shrink: 0 !important;
+    background: var(--azul) !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 0 18px !important;
+    height: 38px !important;
+    border-radius: var(--radio-md) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-family: var(--fuente-chat) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 7px !important;
+    transition: background 0.13s, transform 0.1s !important;
+    box-shadow: none !important;
+    white-space: nowrap !important;
+}
+
+.mensajes-app .btn-enviar svg { width: 14px !important; height: 14px !important; flex-shrink: 0 !important; }
+.mensajes-app .btn-enviar:hover { background: var(--azul-hover) !important; }
+.mensajes-app .btn-enviar:active { transform: scale(0.97) !important; }
+.mensajes-app .btn-enviar:disabled { opacity: 0.6 !important; cursor: default !important; transform: none !important; }
+
+.mensajes-app .archivo-seleccionado {
+    font-size: 11.5px !important;
+    color: var(--texto-suave) !important;
+    display: block !important;
+}
+
+/* ── Banner correo ───────────────────────────────────────────────────────── */
+.mensajes-app .correo-banner {
+    display: none !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 9px 12px !important;
+    background: var(--azul-suave) !important;
+    border-radius: var(--radio-md) !important;
+}
+
+/* FIX: usar clase .visible-flex en lugar de style inline para el banner */
+.mensajes-app .correo-banner.visible-flex {
+    display: flex !important;
+}
+
+.mensajes-app .icono-correo { width: 16px !important; height: 16px !important; color: var(--azul) !important; flex-shrink: 0 !important; display: block !important; }
+
+.mensajes-app .correo-texto {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    overflow: hidden !important;
+    min-width: 0 !important;
+}
+
+.mensajes-app .correo-titulo { font-size: 12px !important; font-weight: 600 !important; color: var(--texto) !important; display: block !important; }
+.mensajes-app .correo-destinatario { font-size: 11px !important; color: var(--azul) !important; font-weight: 500 !important; display: block !important; }
+
+.mensajes-app .switch-correo { display: flex !important; align-items: center !important; cursor: pointer !important; flex-shrink: 0 !important; }
+.mensajes-app .switch-correo input { display: none !important; }
+
+.mensajes-app .switch-pista {
+    width: 32px !important;
+    height: 18px !important;
+    border-radius: 999px !important;
+    background: #c9caf0 !important;
+    position: relative !important;
+    transition: background 0.18s !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+.mensajes-app .switch-bola {
+    position: absolute !important;
+    top: 2px !important;
+    left: 2px !important;
+    width: 14px !important;
+    height: 14px !important;
+    border-radius: 50% !important;
+    background: #fff !important;
+    transition: transform 0.18s !important;
+    display: block !important;
+}
+
+.mensajes-app .switch-correo input:checked + .switch-pista { background: var(--azul) !important; }
+.mensajes-app .switch-correo input:checked + .switch-pista .switch-bola { transform: translateX(14px) !important; }
+
+/* ── Avisos ──────────────────────────────────────────────────────────────── */
+.mensajes-app .form-aviso {
+    display: none !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 7px !important;
+    padding: 7px 12px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.mensajes-app .form-aviso.visible { display: flex !important; }
+.mensajes-app .form-aviso svg { width: 13px !important; height: 13px !important; flex-shrink: 0 !important; }
+.mensajes-app .form-error { color: var(--error) !important; background: var(--error-fondo) !important; }
+.mensajes-app .form-exito { color: var(--exito) !important; background: var(--exito-fondo) !important; }
+
+/* ── Panel detalles ──────────────────────────────────────────────────────── */
+.mensajes-app .panel-detalles {
+    width: 210px !important;
+    min-width: 210px !important;
+    max-width: 210px !important;
+    flex-shrink: 0 !important;
+    background: var(--superficie) !important;
+    border-left: 1px solid var(--borde) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+}
+
+.mensajes-app .panel-detalles::-webkit-scrollbar { width: 4px; }
+.mensajes-app .panel-detalles::-webkit-scrollbar-thumb { background: var(--borde-fuerte); border-radius: 4px; }
+
+.mensajes-app .detalles-header {
+    padding: 14px 16px 12px !important;
+    border-bottom: 1px solid var(--borde) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--texto) !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+.mensajes-app .detalles-seccion {
+    padding: 14px 16px !important;
+    border-bottom: 1px solid var(--borde) !important;
+}
+
+.mensajes-app .detalles-label {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    color: var(--texto-suave) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 10px !important;
+    display: block !important;
+}
+
+.mensajes-app .detalle-fila {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+    font-size: 12px !important;
+    color: var(--texto) !important;
+    word-break: break-all !important;
+}
+
+.mensajes-app .detalle-fila svg {
+    width: 14px !important;
+    height: 14px !important;
+    color: var(--texto-suave) !important;
+    flex-shrink: 0 !important;
+    margin-top: 1px !important;
+    display: block !important;
+}
+
+.mensajes-app .rol-badge-detalle {
+    display: inline-block !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    color: var(--azul) !important;
+    background: var(--azul-suave) !important;
+    padding: 2px 9px !important;
+    border-radius: 999px !important;
+    margin-top: 4px !important;
+}
+
+.mensajes-app .btn-accion {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    padding: 7px 0 !important;
+    border: 1px solid var(--borde-fuerte) !important;
+    border-radius: var(--radio-md) !important;
+    background: none !important;
+    font-size: 12px !important;
+    font-family: var(--fuente-chat) !important;
+    font-weight: 500 !important;
+    color: var(--texto-suave) !important;
+    cursor: pointer !important;
+    margin-bottom: 7px !important;
+    transition: background 0.13s, color 0.13s !important;
+    box-shadow: none !important;
+}
+
+.mensajes-app .btn-accion svg { width: 14px !important; height: 14px !important; flex-shrink: 0 !important; }
+.mensajes-app .btn-accion:hover { background: var(--azul-suave) !important; border-color: var(--azul-claro) !important; color: var(--azul) !important; }
+.mensajes-app .btn-accion:last-child { margin-bottom: 0 !important; }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+    .mensajes-app .panel-detalles { display: none !important; }
+}
+
+@media (max-width: 620px) {
+    .mensajes-app .lista-contactos { width: 64px !important; min-width: 64px !important; max-width: 64px !important; }
+    .mensajes-app .lista-contactos-header h2,
+    .mensajes-app .icono-encabezado,
+    .mensajes-app .contacto-info,
+    .mensajes-app .contactos-tabs,
+    .mensajes-app .contacto-online { display: none !important; }
+    .mensajes-app .contacto { justify-content: center !important; }
+    .mensajes-app .mensaje { max-width: 82% !important; }
 }
