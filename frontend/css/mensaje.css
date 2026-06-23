@@ -35,7 +35,6 @@
     position: relative;
 }
 
-/* ── Sidebar contactos ───────────────────────────────────────────────────── */
 .mensajes-app .lista-contactos {
     width: 270px !important;
     min-width: 270px !important;
@@ -190,7 +189,6 @@
     font-size: 13px !important;
 }
 
-/* ── Panel chat ──────────────────────────────────────────────────────────── */
 .mensajes-app .panel-chat {
     flex: 1 1 0 !important;
     min-width: 0 !important;
@@ -201,8 +199,6 @@
     background: var(--fondo-chat) !important;
 }
 
-/* FIX: chat-vacio y chat-activo se controlan con la clase .oculto,
-   no con display inline, para evitar conflictos con !important */
 .mensajes-app .chat-vacio {
     flex: 1 !important;
     display: flex !important;
@@ -220,6 +216,8 @@
 .mensajes-app .chat-vacio svg {
     width: 44px !important;
     height: 44px !important;
+    max-width: 44px !important;
+    max-height: 44px !important;
     color: #c5c6d4 !important;
     display: block !important;
 }
@@ -233,8 +231,11 @@
     overflow: hidden !important;
 }
 
-/* FIX PRINCIPAL: .oculto usa display:none con !important, gana siempre */
 .mensajes-app .oculto {
+    display: none !important;
+}
+
+.modal-overlay.oculto {
     display: none !important;
 }
 
@@ -290,7 +291,6 @@
 
 .mensajes-app .btn-header:hover { background: var(--fondo-chat) !important; }
 
-/* ── Mensajes ────────────────────────────────────────────────────────────── */
 .mensajes-app .chat-mensajes {
     flex: 1 1 0 !important;
     overflow-y: auto !important;
@@ -335,6 +335,60 @@
     flex-direction: row-reverse !important;
 }
 
+.mensajes-app .mensaje-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    position: relative !important;
+    max-width: 62% !important;
+}
+
+.mensajes-app .mensaje-fila.propio .mensaje-wrapper {
+    align-items: flex-end !important;
+}
+
+.mensajes-app .mensaje-acciones {
+    display: none !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    margin-bottom: 4px !important;
+}
+
+.mensajes-app .mensaje-fila:hover .mensaje-acciones {
+    display: flex !important;
+}
+
+.mensajes-app .btn-msg-accion {
+    background: var(--superficie) !important;
+    border: 1px solid var(--borde-fuerte) !important;
+    border-radius: 6px !important;
+    padding: 3px 7px !important;
+    cursor: pointer !important;
+    color: var(--texto-suave) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.12s, color 0.12s !important;
+    line-height: 1 !important;
+}
+
+.mensajes-app .btn-msg-accion svg {
+    width: 13px !important;
+    height: 13px !important;
+}
+
+.mensajes-app .btn-msg-accion:hover {
+    background: var(--azul-suave) !important;
+    color: var(--azul) !important;
+    border-color: var(--azul-claro) !important;
+}
+
+.mensajes-app .btn-eliminar-msg:hover {
+    background: var(--error-fondo) !important;
+    color: var(--error) !important;
+    border-color: var(--error) !important;
+}
+
 .mensajes-app .avatar-mini {
     width: 27px !important;
     height: 27px !important;
@@ -350,7 +404,7 @@
 }
 
 .mensajes-app .mensaje {
-    max-width: 62% !important;
+    max-width: 100% !important;
     padding: 9px 14px !important;
     border-radius: 16px !important;
     font-size: 13px !important;
@@ -377,6 +431,11 @@
     opacity: 0.75 !important;
     margin-bottom: 4px !important;
     display: block !important;
+}
+
+.mensajes-app .mensaje-texto {
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
 }
 
 .mensajes-app .mensaje-adjunto {
@@ -416,7 +475,6 @@
     margin-top: 40px !important;
 }
 
-/* ── Formulario ──────────────────────────────────────────────────────────── */
 .mensajes-app .chat-form {
     padding: 12px 20px 14px !important;
     border-top: 1px solid var(--borde) !important;
@@ -521,72 +579,103 @@
 .mensajes-app .btn-enviar:active { transform: scale(0.97) !important; }
 .mensajes-app .btn-enviar:disabled { opacity: 0.6 !important; cursor: default !important; transform: none !important; }
 
-.mensajes-app .archivo-seleccionado {
-    font-size: 11.5px !important;
+.mensajes-app .archivo-fila {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 7px !important;
+    font-size: 12px !important;
     color: var(--texto-suave) !important;
-    display: block !important;
+    background: var(--azul-suave) !important;
+    border-radius: var(--radio-md) !important;
+    padding: 6px 10px !important;
 }
 
-/* ── Banner correo ───────────────────────────────────────────────────────── */
-.mensajes-app .correo-banner {
+.mensajes-app .archivo-fila svg {
+    width: 14px !important;
+    height: 14px !important;
+    color: var(--azul) !important;
+    flex-shrink: 0 !important;
+}
+
+.mensajes-app .archivo-nombre {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: var(--azul) !important;
+    font-weight: 500 !important;
+}
+
+.mensajes-app .btn-cancelar-archivo {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    color: var(--texto-suave) !important;
+    flex-shrink: 0 !important;
+    border-radius: 4px !important;
+}
+
+.mensajes-app .btn-cancelar-archivo svg {
+    width: 13px !important;
+    height: 13px !important;
+    color: inherit !important;
+}
+
+.mensajes-app .btn-cancelar-archivo:hover {
+    color: var(--error) !important;
+    background: var(--error-fondo) !important;
+}
+
+.mensajes-app .editar-banner {
     display: none !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 10px !important;
-    padding: 9px 12px !important;
-    background: var(--azul-suave) !important;
+    gap: 8px !important;
+    padding: 7px 12px !important;
+    background: #fffbeb !important;
+    border: 1px solid #fde68a !important;
     border-radius: var(--radio-md) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #854d0e !important;
 }
 
-/* FIX: usar clase .visible-flex en lugar de style inline para el banner */
-.mensajes-app .correo-banner.visible-flex {
+.mensajes-app .editar-banner.visible {
     display: flex !important;
 }
 
-.mensajes-app .icono-correo { width: 16px !important; height: 16px !important; color: var(--azul) !important; flex-shrink: 0 !important; display: block !important; }
-
-.mensajes-app .correo-texto {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1px !important;
-    overflow: hidden !important;
-    min-width: 0 !important;
-}
-
-.mensajes-app .correo-titulo { font-size: 12px !important; font-weight: 600 !important; color: var(--texto) !important; display: block !important; }
-.mensajes-app .correo-destinatario { font-size: 11px !important; color: var(--azul) !important; font-weight: 500 !important; display: block !important; }
-
-.mensajes-app .switch-correo { display: flex !important; align-items: center !important; cursor: pointer !important; flex-shrink: 0 !important; }
-.mensajes-app .switch-correo input { display: none !important; }
-
-.mensajes-app .switch-pista {
-    width: 32px !important;
-    height: 18px !important;
-    border-radius: 999px !important;
-    background: #c9caf0 !important;
-    position: relative !important;
-    transition: background 0.18s !important;
-    flex-shrink: 0 !important;
-    display: block !important;
-}
-
-.mensajes-app .switch-bola {
-    position: absolute !important;
-    top: 2px !important;
-    left: 2px !important;
+.mensajes-app .editar-banner svg {
     width: 14px !important;
     height: 14px !important;
-    border-radius: 50% !important;
-    background: #fff !important;
-    transition: transform 0.18s !important;
-    display: block !important;
+    flex-shrink: 0 !important;
 }
 
-.mensajes-app .switch-correo input:checked + .switch-pista { background: var(--azul) !important; }
-.mensajes-app .switch-correo input:checked + .switch-pista .switch-bola { transform: translateX(14px) !important; }
+.mensajes-app .editar-banner span {
+    flex: 1 !important;
+}
 
-/* ── Avisos ──────────────────────────────────────────────────────────────── */
+.mensajes-app .btn-cancelar-edicion {
+    background: none !important;
+    border: 1px solid #fde68a !important;
+    border-radius: 6px !important;
+    padding: 3px 10px !important;
+    font-size: 11.5px !important;
+    font-family: var(--fuente-chat) !important;
+    font-weight: 500 !important;
+    color: #854d0e !important;
+    cursor: pointer !important;
+    transition: background 0.13s !important;
+}
+
+.mensajes-app .btn-cancelar-edicion:hover {
+    background: #fef3c7 !important;
+}
+
 .mensajes-app .form-aviso {
     display: none !important;
     flex-direction: row !important;
@@ -603,7 +692,6 @@
 .mensajes-app .form-error { color: var(--error) !important; background: var(--error-fondo) !important; }
 .mensajes-app .form-exito { color: var(--exito) !important; background: var(--exito-fondo) !important; }
 
-/* ── Panel detalles ──────────────────────────────────────────────────────── */
 .mensajes-app .panel-detalles {
     width: 210px !important;
     min-width: 210px !important;
@@ -701,7 +789,89 @@
 .mensajes-app .btn-accion:hover { background: var(--azul-suave) !important; border-color: var(--azul-claro) !important; color: var(--azul) !important; }
 .mensajes-app .btn-accion:last-child { margin-bottom: 0 !important; }
 
-/* ── Responsive ──────────────────────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0,0,0,0.35) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 9999 !important;
+}
+
+.modal-caja {
+    background: #fff !important;
+    border-radius: 12px !important;
+    padding: 28px 28px 22px !important;
+    max-width: 340px !important;
+    width: 90% !important;
+    text-align: center !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.13) !important;
+}
+
+.modal-icono {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: var(--error-fondo) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 14px !important;
+}
+
+.modal-icono svg {
+    width: 22px !important;
+    height: 22px !important;
+    color: var(--error) !important;
+}
+
+.modal-texto {
+    font-size: 14px !important;
+    color: var(--texto) !important;
+    margin-bottom: 20px !important;
+    line-height: 1.5 !important;
+}
+
+.modal-texto small {
+    font-size: 12px !important;
+    color: var(--texto-suave) !important;
+}
+
+.modal-botones {
+    display: flex !important;
+    gap: 8px !important;
+    justify-content: center !important;
+}
+
+.modal-btn {
+    padding: 7px 22px !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-family: var(--fuente-chat) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    border: none !important;
+    transition: background 0.13s, transform 0.1s !important;
+}
+
+.modal-btn:active { transform: scale(0.97) !important; }
+
+.modal-btn-cancel {
+    background: var(--fondo-chat) !important;
+    color: var(--texto-suave) !important;
+    border: 1px solid var(--borde-fuerte) !important;
+}
+
+.modal-btn-cancel:hover { background: #e5e6f0 !important; }
+
+.modal-btn-confirm {
+    background: var(--error) !important;
+    color: #fff !important;
+}
+
+.modal-btn-confirm:hover { background: #b91c1c !important; }
+
 @media (max-width: 960px) {
     .mensajes-app .panel-detalles { display: none !important; }
 }

@@ -30,47 +30,11 @@ $id_usuario_actual = (int) $_SESSION['id_usuario'];
 
 define('CARPETA_UPLOADS', __DIR__ . '/../uploads/');
 define('EXTENSIONES_PERMITIDAS', ['xls', 'xlsx']);
-define('CORREO_REMITENTE', 'no-responder@upsjb.edu.pe');
-define('CORREOS_DESTINO', [
-    'alex'    => ['nombre' => 'Alex Luque',     'email' => 'josue.luque@upsjb.edu.pe'],
-    'kaori'   => ['nombre' => 'Kaori Huamán',   'email' => 'ladyk.huaman@upsjb.edu.pe'],
-    'josue'   => ['nombre' => 'Josue Laurente', 'email' => 'josue.laurente@upsjb.edu.pe'],
-    'angello' => ['nombre' => 'Angello Sotelo', 'email' => 'angello.sotelo@upsjb.edu.pe'],
-    'carlos'  => ['nombre' => 'Carlos Tasayco', 'email' => 'carlos.tasayco@upsjb.edu.pe'],
-]);
-
-function enviarCorreoConAdjunto($paraEmail, $asunto, $cuerpo, $rutaAdjunto = null, $nombreAdjunto = null) {
-    $boundary = md5((string) microtime(true));
-
-    $cabeceras  = "MIME-Version: 1.0\r\n";
-    $cabeceras .= "From: Plataforma de Mensajes <" . CORREO_REMITENTE . ">\r\n";
-    $cabeceras .= "Reply-To: " . CORREO_REMITENTE . "\r\n";
-    $cabeceras .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
-
-    $cuerpoFinal  = "--$boundary\r\n";
-    $cuerpoFinal .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    $cuerpoFinal .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-    $cuerpoFinal .= $cuerpo . "\r\n";
-
-    if ($rutaAdjunto && $nombreAdjunto && file_exists($rutaAdjunto)) {
-        $contenido = chunk_split(base64_encode(file_get_contents($rutaAdjunto)));
-        $cuerpoFinal .= "--$boundary\r\n";
-        $cuerpoFinal .= "Content-Type: application/octet-stream; name=\"$nombreAdjunto\"\r\n";
-        $cuerpoFinal .= "Content-Transfer-Encoding: base64\r\n";
-        $cuerpoFinal .= "Content-Disposition: attachment; filename=\"$nombreAdjunto\"\r\n\r\n";
-        $cuerpoFinal .= $contenido . "\r\n";
-    }
-
-    $cuerpoFinal .= "--$boundary--";
-
-    return @mail($paraEmail, $asunto, $cuerpoFinal, $cabeceras);
-}
 
 if (isset($_REQUEST['accion'])) {
     header('Content-Type: application/json; charset=utf-8');
     $accion = $_REQUEST['accion'];
 
-    // ── Listar mensajes ──────────────────────────────────────────────────────
     if ($accion === 'listar_mensajes') {
         $id_contacto = (int) ($_GET['id_contacto'] ?? 0);
 
@@ -109,15 +73,12 @@ if (isset($_REQUEST['accion'])) {
         exit();
     }
 
-    // ── Enviar mensaje ───────────────────────────────────────────────────────
     if ($accion === 'enviar_mensaje') {
-        $id_receptor       = (int) ($_POST['id_receptor'] ?? 0);
-        $titulo            = trim($_POST['titulo'] ?? '');
-        $texto             = trim($_POST['mensaje'] ?? '');
-        $correo_destino_key = trim($_POST['correo_destino'] ?? '');
+        $id_receptor = (int) ($_POST['id_receptor'] ?? 0);
+        $titulo      = trim($_POST['titulo'] ?? '');
+        $texto       = trim($_POST['mensaje'] ?? '');
 
         $nombre_guardado = null;
-        $nombre_original = null;
 
         if ($id_receptor <= 0) {
             echo json_encode(['ok' => false, 'error' => 'Selecciona un destinatario válido.']);
@@ -125,10 +86,6 @@ if (isset($_REQUEST['accion'])) {
         }
         if ($texto === '' && empty($_FILES['archivo']['name'])) {
             echo json_encode(['ok' => false, 'error' => 'Escribe un mensaje o adjunta un archivo.']);
-            exit();
-        }
-        if ($correo_destino_key !== '' && !isset(CORREOS_DESTINO[$correo_destino_key])) {
-            echo json_encode(['ok' => false, 'error' => 'No se reconoce el destinatario de correo.']);
             exit();
         }
 
@@ -153,7 +110,6 @@ if (isset($_REQUEST['accion'])) {
             $nombre_base     = pathinfo($archivo['name'], PATHINFO_FILENAME);
             $nombre_base     = preg_replace('/[^A-Za-z0-9_\-]/', '_', $nombre_base);
             $nombre_guardado = $nombre_base . '_' . uniqid() . '.' . $extension;
-            $nombre_original = $archivo['name'];
             $ruta_destino    = CARPETA_UPLOADS . $nombre_guardado;
 
             if (!move_uploaded_file($archivo['tmp_name'], $ruta_destino)) {
@@ -177,23 +133,75 @@ if (isset($_REQUEST['accion'])) {
             exit();
         }
 
-        $correo_enviado        = null;
-        $correo_nombre_destino = null;
+        echo json_encode(['ok' => true]);
+        exit();
+    }
 
-        if ($correo_destino_key !== '') {
-            $destino               = CORREOS_DESTINO[$correo_destino_key];
-            $correo_nombre_destino = $destino['nombre'];
-            $asunto                = $titulo !== '' ? $titulo : 'Nuevo mensaje desde la plataforma';
-            $cuerpo                = $texto  !== '' ? $texto  : 'Se ha compartido un archivo desde la plataforma de mensajes.';
-            $ruta_adjunto          = $nombre_guardado ? CARPETA_UPLOADS . $nombre_guardado : null;
-            $correo_enviado        = enviarCorreoConAdjunto($destino['email'], $asunto, $cuerpo, $ruta_adjunto, $nombre_original);
+    if ($accion === 'eliminar_mensaje') {
+        $id_mensaje = (int) ($_POST['id_mensaje'] ?? 0);
+
+        if ($id_mensaje <= 0) {
+            echo json_encode(['ok' => false, 'error' => 'ID de mensaje inválido.']);
+            exit();
         }
 
-        echo json_encode([
-            'ok'                    => true,
-            'correo_enviado'        => $correo_enviado,
-            'correo_nombre_destino' => $correo_nombre_destino,
-        ]);
+        $sql  = "SELECT archivo FROM mensajes WHERE id_mensaje = ? AND id_emisor = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $id_mensaje, $id_usuario_actual);
+        mysqli_stmt_execute($stmt);
+        $res  = mysqli_stmt_get_result($stmt);
+        $fila = mysqli_fetch_assoc($res);
+        mysqli_stmt_close($stmt);
+
+        if (!$fila) {
+            echo json_encode(['ok' => false, 'error' => 'No tienes permiso para eliminar este mensaje.']);
+            exit();
+        }
+
+        if (!empty($fila['archivo'])) {
+            $ruta = CARPETA_UPLOADS . $fila['archivo'];
+            if (file_exists($ruta)) {
+                @unlink($ruta);
+            }
+        }
+
+        $sql  = "DELETE FROM mensajes WHERE id_mensaje = ? AND id_emisor = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $id_mensaje, $id_usuario_actual);
+        $ok   = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        echo json_encode(['ok' => $ok, 'error' => $ok ? null : 'No se pudo eliminar el mensaje.']);
+        exit();
+    }
+
+    if ($accion === 'editar_mensaje') {
+        $id_mensaje = (int) ($_POST['id_mensaje'] ?? 0);
+        $titulo     = trim($_POST['titulo']  ?? '');
+        $texto      = trim($_POST['mensaje'] ?? '');
+
+        if ($id_mensaje <= 0) {
+            echo json_encode(['ok' => false, 'error' => 'ID de mensaje inválido.']);
+            exit();
+        }
+        if ($texto === '') {
+            echo json_encode(['ok' => false, 'error' => 'El mensaje no puede estar vacío.']);
+            exit();
+        }
+
+        $sql  = "UPDATE mensajes SET titulo = ?, mensaje = ? WHERE id_mensaje = ? AND id_emisor = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ssii", $titulo, $texto, $id_mensaje, $id_usuario_actual);
+        $ok   = mysqli_stmt_execute($stmt);
+        $rows = mysqli_stmt_affected_rows($stmt);
+        mysqli_stmt_close($stmt);
+
+        if (!$ok || $rows === 0) {
+            echo json_encode(['ok' => false, 'error' => 'No se pudo editar el mensaje.']);
+            exit();
+        }
+
+        echo json_encode(['ok' => true]);
         exit();
     }
 
@@ -201,9 +209,6 @@ if (isset($_REQUEST['accion'])) {
     exit();
 }
 
-// ── Cargar lista de usuarios (incluye correo, numero, direccion) ─────────────
-// FIX: Se agregaron correo, numero y direccion a la SELECT para que el panel
-//      de detalles los muestre correctamente.
 $sql_usuarios = "SELECT id_usuario, nombre, apellido, rol, correo, numero, direccion
                   FROM usuario
                   WHERE id_usuario != ?
@@ -229,7 +234,6 @@ mysqli_stmt_close($stmt);
 <body>
 <div class="mensajes-app">
 
-    <!-- ── Sidebar contactos ── -->
     <aside class="lista-contactos">
         <div class="lista-contactos-header">
             <svg class="icono-encabezado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -245,16 +249,13 @@ mysqli_stmt_close($stmt);
         <div class="contactos-scroll">
             <?php foreach ($usuarios as $u): ?>
                 <?php
-                    $iniciales     = mb_strtoupper(mb_substr($u['nombre'], 0, 1) . mb_substr($u['apellido'], 0, 1));
-                    $primer_nombre = mb_strtolower($u['nombre'], 'UTF-8');
-                    $clave_correo  = array_key_exists($primer_nombre, CORREOS_DESTINO) ? $primer_nombre : '';
-                    $tono_avatar   = $u['id_usuario'] % 5;
+                    $iniciales   = mb_strtoupper(mb_substr($u['nombre'], 0, 1) . mb_substr($u['apellido'], 0, 1));
+                    $tono_avatar = $u['id_usuario'] % 5;
                 ?>
                 <div class="contacto"
                      data-id="<?= (int) $u['id_usuario'] ?>"
                      data-nombre="<?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?>"
                      data-rol="<?= htmlspecialchars($u['rol']) ?>"
-                     data-correo="<?= htmlspecialchars($clave_correo) ?>"
                      data-email="<?= htmlspecialchars($u['correo'] ?? '') ?>"
                      data-phone="<?= htmlspecialchars($u['numero'] ?? '') ?>"
                      data-city="<?= htmlspecialchars($u['direccion'] ?? '') ?>">
@@ -273,14 +274,13 @@ mysqli_stmt_close($stmt);
         </div>
     </aside>
 
-    <!-- ── Panel chat ── -->
     <main class="panel-chat">
         <div class="chat-vacio" id="chat-vacio">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
             <p>Selecciona un usuario para ver o enviar mensajes</p>
         </div>
 
-        <div class="chat-activo" id="chat-activo" style="display:none;">
+        <div class="chat-activo" id="chat-activo">
 
             <div class="chat-header">
                 <div class="avatar" id="chat-avatar"></div>
@@ -299,33 +299,35 @@ mysqli_stmt_close($stmt);
 
             <form id="form-mensaje" class="chat-form" autocomplete="off">
                 <input type="hidden" name="id_receptor" id="input-id-receptor" value="">
+                <input type="hidden" name="id_mensaje_edit" id="input-id-mensaje-edit" value="">
+
                 <input type="text" name="titulo" id="input-titulo" class="input-titulo" placeholder="Título (opcional)" maxlength="150">
 
                 <div class="chat-form-fila">
                     <textarea name="mensaje" id="input-mensaje" placeholder="Escribe un mensaje..." rows="2"></textarea>
-                    <label class="btn-icono" title="Adjuntar Excel">
+                    <label class="btn-icono" id="btn-adjuntar" title="Adjuntar Excel">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                         Excel
                         <input type="file" name="archivo" id="input-archivo" accept=".xls,.xlsx">
                     </label>
-                    <button type="submit" class="btn-enviar">
-                        Enviar
+                    <button type="submit" class="btn-enviar" id="btn-enviar">
+                        <span id="btn-enviar-texto">Enviar</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </button>
                 </div>
 
-                <span class="archivo-seleccionado" id="archivo-seleccionado"></span>
+                <div class="archivo-fila oculto" id="archivo-fila">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span class="archivo-nombre" id="archivo-seleccionado"></span>
+                    <button type="button" class="btn-cancelar-archivo" id="btn-cancelar-archivo" title="Quitar archivo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
 
-                <div class="correo-banner" id="correo-banner">
-                    <label class="switch-correo">
-                        <input type="checkbox" id="check-correo">
-                        <span class="switch-pista"><span class="switch-bola"></span></span>
-                    </label>
-                    <svg class="icono-correo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    <div class="correo-texto">
-                        <span class="correo-titulo">Enviar copia por correo institucional</span>
-                        <span class="correo-destinatario" id="correo-destinatario-info"></span>
-                    </div>
+                <div class="editar-banner" id="editar-banner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <span>Editando mensaje</span>
+                    <button type="button" id="btn-cancelar-edicion" class="btn-cancelar-edicion">Cancelar</button>
                 </div>
 
                 <div class="form-aviso form-error" id="form-error"></div>
@@ -334,8 +336,7 @@ mysqli_stmt_close($stmt);
         </div>
     </main>
 
-    <!-- ── Panel detalles ── -->
-    <aside class="panel-detalles" id="panel-detalles" style="display:none;">
+    <aside class="panel-detalles" id="panel-detalles">
         <div class="detalles-header">Detalles</div>
 
         <div class="detalles-seccion">
@@ -363,10 +364,6 @@ mysqli_stmt_close($stmt);
 
         <div class="detalles-seccion">
             <div class="detalles-label">Acciones</div>
-            <button class="btn-accion" onclick="document.getElementById('check-correo').click()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                Enviar por correo
-            </button>
             <button class="btn-accion" onclick="document.getElementById('input-archivo').click()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Adjuntar Excel
@@ -375,6 +372,20 @@ mysqli_stmt_close($stmt);
     </aside>
 
 </div>
+
+<div class="modal-overlay oculto" id="modal-eliminar">
+    <div class="modal-caja">
+        <div class="modal-icono">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </div>
+        <p class="modal-texto">¿Eliminar este mensaje?<br><small>Esta acción no se puede deshacer.</small></p>
+        <div class="modal-botones">
+            <button class="modal-btn modal-btn-cancel" id="modal-cancelar">Cancelar</button>
+            <button class="modal-btn modal-btn-confirm" id="modal-confirmar">Eliminar</button>
+        </div>
+    </div>
+</div>
+
 <script src="js/mensaje.js"></script>
 </body>
 </html>
